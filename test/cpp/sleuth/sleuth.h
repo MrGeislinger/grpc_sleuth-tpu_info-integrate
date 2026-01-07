@@ -34,6 +34,14 @@ int RunSleuth(int argc, char** argv,
 int RunSleuth_Wrapper(std::vector<std::string> args, void* python_print,
                       void (*python_cb)(void*, const std::string&));
 
+extern "C" {
+// C-compatible wrapper for RunSleuth.
+// - python_print: Context pointer passed to callback.
+// - python_cb: Callback function receiving context and null-terminated string.
+int RunSleuthC(int argc, char** argv, void* python_print,
+               void (*python_cb)(void*, const char*));
+}
+
 }  // namespace grpc_sleuth
 
 #endif  // GRPC_TEST_CPP_SLEUTH_SLEUTH_H

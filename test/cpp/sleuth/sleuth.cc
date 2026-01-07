@@ -96,4 +96,17 @@ int RunSleuth_Wrapper(std::vector<std::string> args, void* python_print,
   return RunSleuth(argv_vec.size(), argv_vec.data(), std::move(print_fn));
 }
 
+extern "C" {
+int RunSleuthC(int argc, char** argv, void* python_print,
+               void (*python_cb)(void*, const char*)) {
+  absl::AnyInvocable<void(std::string) const> print_fn = nullptr;
+  if (python_print != nullptr && python_cb != nullptr) {
+    print_fn = [python_print, python_cb](const std::string& message) {
+      python_cb(python_print, message.c_str());
+    };
+  }
+  return RunSleuth(argc, argv, std::move(print_fn));
+}
+}
+
 }  // namespace grpc_sleuth
